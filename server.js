@@ -28,6 +28,38 @@ app.post('/todo', (req, res) => {
   res.redirect('/');
 });
 
+
+app.put('/todos/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    
+    const { text, completed } = req.body; 
+
+    const index = todos.findIndex(todo => todo.id === id);
+
+    if (index !== -1) {
+        if (text !== undefined) todos[index].text = text;
+        if (completed !== undefined) todos[index].completed = completed;
+        
+        res.status(200).json({ message: "수정 완료", data: todos[index] });
+    } else {
+        res.status(404).json({ message: "해당 할 일을 찾을 수 없습니다." });
+    }
+});
+
+app.delete('/todos/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+
+    const index = todos.findIndex(todo => todo.id === id);
+
+    if (index !== -1) {
+        const deletedTodo = todos.splice(index, 1);
+        
+        res.status(200).json({ message: "삭제 완료", data: deletedTodo[0] });
+    } else {
+        res.status(404).json({ message: "해당 할 일을 찾을 수 없습니다." });
+    }
+});
+
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
